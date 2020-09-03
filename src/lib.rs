@@ -3,11 +3,11 @@
 
 mod utils;
 
-use std::fmt;
 use wasm_bindgen::prelude::*;
 use chrono::{DateTime, Utc, Local};
-use web_sys::{Url};
 use yew::prelude::*;
+use yew::InputData;
+use web_sys::console;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -17,26 +17,46 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 struct Model {
     link: ComponentLink<Self>,
-    value: String,
+    state: State,
 }
 
-enum Msg {
-    AddOne,
+pub struct State {
+    date: String,
+    time: String,
+    tz: String,
+}
+
+pub enum Msg {
+    UpdateDate(String),
+    UpdateTime(String),
 }
 
 impl Component for Model {
     type Message = Msg;
     type Properties = ();
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+        let state = State {
+            date: "".into(),
+            time: "".into(),
+            tz: "".into(),
+        };
         Self {
             link,
-            value: "fg".to_string(),
+            state,
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         let local: DateTime<Local> = Local::now();
-        self.value = local.to_string();
+        //self.value = local.to_string();
+        match msg {
+            Msg::UpdateDate(val) => {
+                self.state.date = val;
+            }
+            Msg::UpdateTime(val) => {
+                self.state.time = val;
+            }
+        }
         true
     }
 
@@ -50,7 +70,14 @@ impl Component for Model {
     fn view(&self) -> Html {
         html! {
             <div>
-                <p>{ &self.value }</p>
+                <input type="date" class="date"
+                    value=&self.state.date
+                    oninput=self.link.callback(|e: InputData| Msg::UpdateDate(e.value))
+                />
+                <input type="time" class="date"
+                    value=&self.state.time
+                    oninput=self.link.callback(|e: InputData| Msg::UpdateTime(e.value))
+                />
             </div>
         }
     }

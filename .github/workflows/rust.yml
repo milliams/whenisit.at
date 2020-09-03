@@ -20,6 +20,10 @@ jobs:
       run: wasm-pack build --no-typescript --target web
     - name: Run tests
       run: wasm-pack test --chrome --headless
+    - name: Install resuse
+      run: pip install reuse
+    - name: Check REUSE spec
+      run: reuse lint
     - name: assemble assets
       run: |
         mkdir -p public

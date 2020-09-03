@@ -6,6 +6,8 @@ name = "whenisitat"
 version = "0.1.0"
 authors = ["Matt Williams <matt@milliams.com>"]
 edition = "2018"
+license = "MIT"
+repository = "https://github.com/milliams/whenisit.at"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

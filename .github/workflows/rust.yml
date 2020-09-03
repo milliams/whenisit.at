@@ -27,6 +27,8 @@ jobs:
       run: pip install reuse
     - name: Check REUSE spec
       run: reuse lint
+    - name: convert favicon
+      run: convert -density 256x256 -background transparent static/favicon.svg -define icon:auto-resize -colors 256 static/favicon.ico
     - name: assemble assets
       run: |
         mkdir -p public

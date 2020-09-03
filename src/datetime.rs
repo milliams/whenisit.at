@@ -5,16 +5,17 @@ use yew::prelude::*;
 use yew::InputData;
 use web_sys::console;
 use chrono;
+use chrono::TimeZone;
 
 pub struct DateTime {
     link: ComponentLink<Self>,
     state: State,
-    onsignal: Callback<chrono::DateTime<chrono::Utc>>,
+    onsignal: Callback<chrono::DateTime<chrono::FixedOffset>>,
 }
 
 #[derive(Properties, Clone, PartialEq, Default)]
 pub struct Props {
-    pub onsignal: Callback<chrono::DateTime<chrono::Utc>>,
+    pub onsignal: Callback<chrono::DateTime<chrono::FixedOffset>>,
 }
 
 pub struct State {
@@ -49,25 +50,21 @@ impl Component for DateTime {
             Msg::UpdateDate(val) => {
                 self.state.date = val;
                 match self.create_datetime() {
-                    Ok(datetime) => {
+                    Some(datetime) => {
                         self.onsignal.emit(datetime);
                         console::log_1(&format!("Date changed {}", &datetime).into());
                     },
-                    Err(e) => {
-                        console::log_1(&format!("Error {}", &e).into());
-                    },
+                    None => {},
                 }
             }
             Msg::UpdateTime(val) => {
                 self.state.time = val;
                 match self.create_datetime() {
-                    Ok(datetime) => {
+                    Some(datetime) => {
                         self.onsignal.emit(datetime);
-                        console::log_1(&format!("Time changed {}", &datetime).into());
+                        console::log_1(&format!("Date changed {}", &datetime).into());
                     },
-                    Err(e) => {
-                        console::log_1(&format!("Error {}", &e).into());
-                    },
+                    None => {},
                 }
             }
         }
@@ -98,7 +95,12 @@ impl Component for DateTime {
 }
 
 impl DateTime {
-    fn create_datetime(&self) -> Result<chrono::DateTime<chrono::Utc>, chrono::format::ParseError> {
-        format!("{}T{}Z", &self.state.date, &self.state.time).parse::<chrono::DateTime<chrono::Utc>>()
+    fn create_datetime(&self) -> Option<chrono::DateTime<chrono::FixedOffset>> {
+        let naive_dt = format!("{}T{}", &self.state.date, &self.state.time).parse::<chrono::NaiveDateTime>().ok()?;
+        match chrono::Local::now().offset().from_local_datetime(&naive_dt) {
+            chrono::offset::LocalResult::Single(dt) => Some(dt),
+            chrono::offset::LocalResult::Ambiguous(_, _) => None,  // The user says 1:30 in the morning of a clock change day. *Which* 1:30?
+            chrono::offset::LocalResult::None => None,
+        }
     }
 }

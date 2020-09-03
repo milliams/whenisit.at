@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: © 2020 Matt Williams <matt@milliams.com>
 // SPDX-License-Identifier: MIT
 
+#![recursion_limit = "512"]
+
 mod utils;
 mod datetime;
 

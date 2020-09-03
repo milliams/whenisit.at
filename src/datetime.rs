@@ -6,12 +6,12 @@ use chrono;
 pub struct DateTime {
     link: ComponentLink<Self>,
     state: State,
-    onsignal: Callback<()>,
+    onsignal: Callback<chrono::DateTime<chrono::Utc>>,
 }
 
 #[derive(Properties, Clone, PartialEq, Default)]
 pub struct Props {
-    pub onsignal: Callback<()>,
+    pub onsignal: Callback<chrono::DateTime<chrono::Utc>>,
 }
 
 pub struct State {
@@ -42,16 +42,30 @@ impl Component for DateTime {
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        let local: chrono::DateTime<chrono::Local> = chrono::Local::now();
-        //self.value = local.to_string();
         match msg {
             Msg::UpdateDate(val) => {
                 self.state.date = val;
-                self.onsignal.emit(());
+                match self.create_datetime() {
+                    Ok(datetime) => {
+                        self.onsignal.emit(datetime);
+                        console::log_1(&format!("Date changed {}", &datetime).into());
+                    },
+                    Err(e) => {
+                        console::log_1(&format!("Error {}", &e).into());
+                    },
+                }
             }
             Msg::UpdateTime(val) => {
                 self.state.time = val;
-                self.onsignal.emit(());
+                match self.create_datetime() {
+                    Ok(datetime) => {
+                        self.onsignal.emit(datetime);
+                        console::log_1(&format!("Time changed {}", &datetime).into());
+                    },
+                    Err(e) => {
+                        console::log_1(&format!("Error {}", &e).into());
+                    },
+                }
             }
         }
         true
@@ -71,11 +85,17 @@ impl Component for DateTime {
                     value=&self.state.date
                     oninput=self.link.callback(|e: InputData| Msg::UpdateDate(e.value))
                 />
-                <input type="time" class="date"
+                <input type="time" class="date" step="1"
                     value=&self.state.time
                     oninput=self.link.callback(|e: InputData| Msg::UpdateTime(e.value))
                 />
             </div>
         }
+    }
+}
+
+impl DateTime {
+    fn create_datetime(&self) -> Result<chrono::DateTime<chrono::Utc>, chrono::format::ParseError> {
+        format!("{}T{}Z", &self.state.date, &self.state.time).parse::<chrono::DateTime<chrono::Utc>>()
     }
 }

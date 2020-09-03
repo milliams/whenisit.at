@@ -19,7 +19,7 @@ jobs:
     - name: Build
       run: wasm-pack build --no-typescript --target web
     - name: Run tests
-      run: wasm-pack test --chrome --firefox --headless
+      run: wasm-pack test --chrome --headless
     - name: assemble assets
       run: |
         mkdir -p public

@@ -8,7 +8,6 @@ mod datetime;
 
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
-use web_sys::console;
 
 use crate::datetime::DateTime;
 
@@ -52,7 +51,7 @@ impl Component for Converter {
     }
 
     fn view(&self) -> Html {
-        let onsignal = &self.link.callback(|dt: chrono::DateTime<chrono::Utc>| Msg::DateTimeChanged(dt));
+        let onsignal = &self.link.callback(Msg::DateTimeChanged);
         html! {
             <div>
                 <p>{&if let Some(x) = self.datetime {x.to_string()} else {"".into()} }</p>

@@ -11,12 +11,12 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+    - uses: jetli/wasm-pack-action@v0.3.0
     - name: Build
-      run: cargo build --verbose
+      run: wasm-pack build --no-typescript --target web
     - name: Run tests
-      run: cargo test --verbose
+      run: wasm-pack test --chrome --firefox --headless

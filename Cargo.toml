@@ -12,6 +12,9 @@ repository = "https://github.com/milliams/whenisit.at"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[build]
+target = "wasm32-unknown-unknown"
+
 [features]
 default = ["console_error_panic_hook"]
 

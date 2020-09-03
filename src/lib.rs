@@ -8,6 +8,9 @@ mod datetime;
 
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
+use web_sys::console;
+
+use crate::datetime::DateTime;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -15,8 +18,52 @@ use yew::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+pub struct Converter {
+    link: ComponentLink<Self>,
+    datetime: Option<chrono::DateTime<chrono::Utc>>,
+}
+
+pub enum Msg {
+    DateTimeChanged(chrono::DateTime<chrono::Utc>),
+}
+
+impl Component for Converter {
+    type Message = Msg;
+    type Properties = ();
+
+    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Converter {
+            link,
+            datetime: None,
+        }
+    }
+
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::DateTimeChanged(val) => {
+                self.datetime = Some(val);
+            }
+        }
+        true
+    }
+
+    fn change(&mut self, _: Self::Properties) -> bool {
+        false
+    }
+
+    fn view(&self) -> Html {
+        let onsignal = &self.link.callback(|dt: chrono::DateTime<chrono::Utc>| Msg::DateTimeChanged(dt));
+        html! {
+            <div>
+                <p>{&if let Some(x) = self.datetime {x.to_string()} else {"".into()} }</p>
+                <DateTime onsignal=onsignal />
+            </div>
+        }
+    }
+}
+
 #[wasm_bindgen(start)]
 pub fn run_app() {
     utils::set_panic_hook();
-    App::<datetime::DateTime>::new().mount_to_body();
+    App::<Converter>::new().mount_to_body();
 }

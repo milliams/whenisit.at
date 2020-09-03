@@ -24,7 +24,7 @@ jobs:
     - name: Run tests
       run: wasm-pack test --chrome --headless
     - name: Install reuse
-      run: sudo apt-get install reuse
+      run: sudo pip3 install reuse
     - name: Check REUSE spec
       run: reuse lint
     - name: convert favicon

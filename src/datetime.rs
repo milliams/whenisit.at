@@ -14,6 +14,7 @@ pub struct DateTime {
 
 #[derive(Properties, Clone, PartialEq, Default)]
 pub struct Props {
+    #[prop_or_default]
     pub onsignal: Callback<chrono::DateTime<chrono::Utc>>,
 }
 

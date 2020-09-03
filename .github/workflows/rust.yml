@@ -25,7 +25,10 @@ jobs:
         mkdir -p public
         cp -r static/* public/
         cp -r pkg public/
-    - uses: actions/upload-artifact@v2
+    - name: Publish
+      uses: netlify/actions/cli@master
       with:
-        name: site
-        path: public
+        args: deploy --dir=public
+      env:
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}

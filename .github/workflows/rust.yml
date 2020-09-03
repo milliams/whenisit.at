@@ -24,7 +24,7 @@ jobs:
       run: |
         mkdir -p public
         cp -r static/* public/
-        cp -r pkg/* public/
+        cp -r pkg public/
     - uses: actions/upload-artifact@v2
       with:
         name: site

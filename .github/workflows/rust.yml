@@ -20,3 +20,12 @@ jobs:
       run: wasm-pack build --no-typescript --target web
     - name: Run tests
       run: wasm-pack test --chrome --firefox --headless
+    - name: assemble assets
+      run: |
+        mkdir -p public
+        cp -r static/* public/
+        cp -r pkg/* public/
+    - uses: actions/upload-artifact@v2
+      with:
+        name: site
+        path: public

@@ -18,6 +18,12 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 struct Model {
     link: ComponentLink<Self>,
     state: State,
+    onsignal: Callback<()>,
+}
+
+#[derive(Properties, Clone, PartialEq, Default)]
+pub struct Props {
+    pub onsignal: Callback<()>,
 }
 
 pub struct State {
@@ -33,8 +39,8 @@ pub enum Msg {
 
 impl Component for Model {
     type Message = Msg;
-    type Properties = ();
-    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+    type Properties = Props;
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let state = State {
             date: "".into(),
             time: "".into(),
@@ -43,6 +49,7 @@ impl Component for Model {
         Self {
             link,
             state,
+            onsignal: props.onsignal,
         }
     }
 
@@ -52,9 +59,11 @@ impl Component for Model {
         match msg {
             Msg::UpdateDate(val) => {
                 self.state.date = val;
+                self.onsignal.emit(());
             }
             Msg::UpdateTime(val) => {
                 self.state.time = val;
+                self.onsignal.emit(());
             }
         }
         true

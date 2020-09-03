@@ -1,9 +1,9 @@
 use yew::prelude::*;
 use yew::InputData;
 use web_sys::console;
-use chrono::{DateTime, Utc, Local};
+use chrono;
 
-pub struct Model {
+pub struct DateTime {
     link: ComponentLink<Self>,
     state: State,
     onsignal: Callback<()>,
@@ -25,7 +25,7 @@ pub enum Msg {
     UpdateTime(String),
 }
 
-impl Component for Model {
+impl Component for DateTime {
     type Message = Msg;
     type Properties = Props;
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
@@ -42,7 +42,7 @@ impl Component for Model {
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        let local: DateTime<Local> = Local::now();
+        let local: chrono::DateTime<chrono::Local> = chrono::Local::now();
         //self.value = local.to_string();
         match msg {
             Msg::UpdateDate(val) => {

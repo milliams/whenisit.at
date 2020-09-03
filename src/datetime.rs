@@ -4,7 +4,6 @@
 use yew::prelude::*;
 use yew::InputData;
 use web_sys::console;
-use chrono;
 use chrono::TimeZone;
 
 pub struct DateTime {
@@ -52,30 +51,36 @@ impl Component for DateTime {
                 self.state.date = val;
                 match self.create_datetime() {
                     Ok(datetime) => {
-                        console::log_1(&format!("Date changed {}", &datetime).into());
                         self.onsignal.emit(datetime);
                     },
-                    Err(e) => {console::log_1(&format!("Parsing failed: {}", &e).into()); return false;},
+                    Err(e) => {
+                        console::debug_2(&"Parsing failed:".into(), &e.to_string().into());
+                        return false;
+                    },
                 }
             }
             Msg::UpdateTime(val) => {
                 self.state.time = val;
                 match self.create_datetime() {
                     Ok(datetime) => {
-                        console::log_1(&format!("Time changed {}", &datetime).into());
                         self.onsignal.emit(datetime);
                     },
-                    Err(e) => {console::log_1(&format!("Parsing failed: {}", &e).into()); return false;},
+                    Err(e) => {
+                        console::debug_2(&"Parsing failed:".into(), &e.to_string().into());
+                        return false;
+                    },
                 }
             }
             Msg::UpdateTimeZone(val) => {
                 self.state.tz = val;
                 match self.create_datetime() {
                     Ok(datetime) => {
-                        console::log_1(&format!("TZ changed {}", &datetime).into());
                         self.onsignal.emit(datetime);
                     },
-                    Err(e) => {console::log_1(&format!("Parsing failed: {}", &e).into()); return false;},
+                    Err(e) => {
+                        console::debug_2(&"Parsing failed:".into(), &e.to_string().into());
+                        return false;
+                    },
                 }
             }
         }
@@ -111,12 +116,10 @@ impl Component for DateTime {
 
 impl DateTime {
     fn create_datetime(&self) -> Result<chrono::DateTime<chrono::Utc>, Box<dyn std::error::Error>> {
-        console::log_1(&format!("time '{}'", &format!("{}T{}", &self.state.date, &self.state.time)).into());
-        let naive_dt = format!("{}T{}", &self.state.date, &self.state.time).parse::<chrono::NaiveDateTime>()?;
+        let naive_dt = [&self.state.date, "T", &self.state.time].join("").parse::<chrono::NaiveDateTime>()?;
 
         match self.state.tz.as_str() {
             "" => {
-                console::log_1(&"No timezone".into());
                 match chrono::Local::now().offset().from_local_datetime(&naive_dt) {
                     chrono::offset::LocalResult::Single(dt) => Ok(dt.into()),
                     chrono::offset::LocalResult::Ambiguous(_, _) => Err("Ambiguous".into()),  // The user says 1:30 in the morning of a clock change day. *Which* 1:30?
@@ -124,7 +127,6 @@ impl DateTime {
                 }
             },
             _ => {
-                console::log_1(&format!("Timezone '{}'", &self.state.tz).into());
                 match self.state.tz.parse::<chrono_tz::Tz>()?.from_local_datetime(&naive_dt) {
                     chrono::offset::LocalResult::Single(dt) => Ok(dt.with_timezone(&chrono::Utc)),
                     chrono::offset::LocalResult::Ambiguous(_, _) => Err("Ambiguous".into()),  // The user says 1:30 in the morning of a clock change day. *Which* 1:30?

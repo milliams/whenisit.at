@@ -5,6 +5,7 @@
 
 mod utils;
 mod datetime;
+mod timezonedisplay;
 
 use wasm_bindgen::prelude::*;
 use yew::{App, Html, ShouldRender, ComponentLink, Component, virtual_dom::VNode, html};
@@ -89,27 +90,12 @@ impl Component for Converter {
                             </div>
                         }},
                         Some(AppRoute::GivenTime(dt)) => { html! {
-                            <div>
-                                <p>{"Reference time: "}{&dt.to_string()}</p>
-                                <p>{"Local time: "}{convert_to_timezone(&dt, None).to_string()}</p>
-                            </div>
+                            <timezonedisplay::TimeZoneDisplay datetime=dt />
                         }},
                         None => VNode::from("404")
                     }
                 }
             </div>
-        }
-    }
-}
-
-fn convert_to_timezone(utc_time: &chrono::DateTime<chrono::Utc>, tz: Option<chrono_tz::Tz>) -> chrono::NaiveDateTime {
-    match tz {
-        None => {
-            let local_dt: chrono::DateTime<chrono::Local> = (*utc_time).into();
-            local_dt.naive_local()
-        }
-        Some(timezone) => {
-            utc_time.with_timezone(&timezone).naive_local()
         }
     }
 }

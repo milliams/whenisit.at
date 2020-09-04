@@ -23,6 +23,7 @@ wasm-bindgen = "0.2.67"
 yew = "0.17"
 yew-router = "0.14"
 yew-components = "0.2"
+yewtil = "0.3"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

@@ -1,12 +1,10 @@
 // SPDX-FileCopyrightText: © 2020 Matt Williams <matt@milliams.com>
 // SPDX-License-Identifier: MIT
 
-use wasm_bindgen::prelude::*;
 use yew::{Properties, Html, ShouldRender, ComponentLink, Component, html};
 use yewtil::NeqAssign;
-use js_sys;
 
-use web_sys::console;
+use crate::utils;
 
 pub struct TimeZoneDisplay {
     link: ComponentLink<Self>,
@@ -47,7 +45,7 @@ impl Component for TimeZoneDisplay {
                     <div>
                         <p>{"Reference time: "}{&dt.to_string()}</p>
                         {
-                            if let Some(local_tz) = get_local_timezone() {
+                            if let Some(local_tz) = utils::get_local_timezone() {
                                 html! {
                                     <p>{local_tz.to_string()}{": "}{convert_to_timezone(&dt, local_tz).to_string()}</p>
                                 }
@@ -67,12 +65,6 @@ impl Component for TimeZoneDisplay {
             }
         }
     }
-}
-
-fn get_local_timezone() ->  Option<chrono_tz::Tz> {
-    let options = js_sys::Intl::DateTimeFormat::new(&js_sys::Array::new(), &js_sys::Object::new()).resolved_options();
-    let tz2 = js_sys::Reflect::get(&options, &JsValue::from("timeZone")).ok()?.as_string()?;
-    tz2.parse().ok()
 }
 
 fn convert_to_timezone(utc_time: &chrono::DateTime<chrono::Utc>, tz: chrono_tz::Tz) -> chrono::NaiveDateTime {

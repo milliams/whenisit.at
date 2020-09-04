@@ -6,6 +6,8 @@ use web_sys::console;
 use chrono::TimeZone;
 use yew_components::Select;
 
+use crate::utils;
+
 pub struct DateTime {
     link: ComponentLink<Self>,
     state: State,
@@ -116,21 +118,22 @@ impl DateTime {
     fn create_datetime(&self) -> Result<chrono::DateTime<chrono::Utc>, Box<dyn std::error::Error>> {
         let naive_dt = [&self.state.date, "T", &self.state.time].join("").parse::<chrono::NaiveDateTime>()?;
 
-        match self.state.tz {
-            None => {
-                match chrono::Local::now().offset().from_local_datetime(&naive_dt) {
-                    chrono::offset::LocalResult::Single(dt) => Ok(dt.into()),
-                    chrono::offset::LocalResult::Ambiguous(_, _) => Err("Ambiguous".into()),  // The user says 1:30 in the morning of a clock change day. *Which* 1:30?
-                    chrono::offset::LocalResult::None => Err("None".into()),
-                }
-            },
+        let tz: chrono_tz::Tz = match self.state.tz {
             Some(tz) => {
-                match tz.from_local_datetime(&naive_dt) {
-                    chrono::offset::LocalResult::Single(dt) => Ok(dt.with_timezone(&chrono::Utc)),
-                    chrono::offset::LocalResult::Ambiguous(_, _) => Err("Ambiguous".into()),  // The user says 1:30 in the morning of a clock change day. *Which* 1:30?
-                    chrono::offset::LocalResult::None => Err("None".into()),
+                tz
+            }
+            None => {
+                match utils::get_local_timezone() {
+                    Some(tz) => tz,
+                    None => return Err("No local timezone found".into()),
                 }
-            },
+            }
+        };
+
+        match tz.from_local_datetime(&naive_dt) {
+            chrono::offset::LocalResult::Single(dt) => Ok(dt.with_timezone(&chrono::Utc)),
+            chrono::offset::LocalResult::Ambiguous(_, _) => Err("Ambiguous".into()),  // The user says 1:30 in the morning of a clock change day. *Which* 1:30?
+            chrono::offset::LocalResult::None => Err("None".into()),
         }
     }
 }

@@ -12,9 +12,6 @@ repository = "https://github.com/milliams/whenisit.at"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[build]
-target = "wasm32-unknown-unknown"
-
 [features]
 default = ["console_error_panic_hook"]
 
@@ -24,6 +21,10 @@ yew = "0.17"
 yew-router = "0.14"
 yew-components = "0.2"
 yewtil = "0.3"
+web-sys = "0.3"
+js-sys = "0.3"
+chrono = {version = "0.4", features = ["wasmbind"]}
+chrono-tz = {version = "0.5", default-features = false}
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires
@@ -38,22 +39,8 @@ console_error_panic_hook = { version = "0.1.6", optional = true }
 # Unfortunately, `wee_alloc` requires nightly Rust when targeting wasm for now.
 wee_alloc = { version = "0.4.5", optional = true }
 
-[dependencies.chrono]
-version = "0.4"
-features = ["wasmbind"]
-
-[dependencies.chrono-tz]
-version = "0.5"
-default-features = false
-
-[dependencies.web-sys]
-version = "0.3"
-
-[dependencies.js-sys]
-version = "0.3"
-
 [dev-dependencies]
-wasm-bindgen-test = "0.3.13"
+wasm-bindgen-test = "0.3"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.

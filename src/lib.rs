@@ -77,7 +77,6 @@ impl Component for Converter {
     }
 
     fn view(&self) -> Html {
-        let onsignal = &self.link.callback(Msg::DateTimeChanged);
         html! {
             <div>
                 <h1>{"When is it at"}</h1>
@@ -85,8 +84,8 @@ impl Component for Converter {
                     match AppRoute::switch(self.route.clone()) {
                         Some(AppRoute::Home) => { html! {
                             <div>
-                                <p>{&if let Some(x) = self.datetime {x.to_string()} else {"".into()} }</p>
-                                <DateTime onsignal=onsignal />
+                                <DateTime onsignal=&self.link.callback(Msg::DateTimeChanged) />
+                                <timezonedisplay::TimeZoneDisplay datetime=&self.datetime />
                             </div>
                         }},
                         Some(AppRoute::GivenTime(dt)) => { html! {

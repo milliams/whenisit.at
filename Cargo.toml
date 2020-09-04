@@ -49,6 +49,9 @@ default-features = false
 [dependencies.web-sys]
 version = "0.3"
 
+[dependencies.js-sys]
+version = "0.3"
+
 [dev-dependencies]
 wasm-bindgen-test = "0.3.13"
 

@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: © 2020 Matt Williams <matt@milliams.com>
 // SPDX-License-Identifier: MIT
 
-use yew::prelude::*;
-use yew::InputData;
+use yew::{Properties, Html, ShouldRender, ComponentLink, Component, Callback, InputData, html};
 use web_sys::console;
 use chrono::TimeZone;
 use yew_components::Select;

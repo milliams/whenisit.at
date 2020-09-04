@@ -7,10 +7,8 @@ mod utils;
 mod datetime;
 
 use wasm_bindgen::prelude::*;
-use yew::prelude::*;
-use yew::virtual_dom::VNode;
+use yew::{App, Html, ShouldRender, ComponentLink, Component, virtual_dom::VNode, html};
 use yew_router::{route::Route, service::RouteService, Switch};
-use chrono::TimeZone;
 
 use crate::datetime::DateTime;
 

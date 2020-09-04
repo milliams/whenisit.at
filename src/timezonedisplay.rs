@@ -8,7 +8,6 @@ use crate::utils;
 
 /// Displays a time in several time zones
 pub struct TimeZoneDisplay {
-    link: ComponentLink<Self>,
     props: Props,
 }
 
@@ -22,9 +21,8 @@ impl Component for TimeZoneDisplay {
     type Message = ();
     type Properties = Props;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
         TimeZoneDisplay {
-            link,
             props: Props {
                 datetime: props.datetime,
             }

@@ -8,6 +8,7 @@ use yew_components::Select;
 
 use crate::utils;
 
+/// A data, time and time zone picker
 pub struct DateTime {
     link: ComponentLink<Self>,
     state: State,

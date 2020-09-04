@@ -6,6 +6,7 @@ use yewtil::NeqAssign;
 
 use crate::utils;
 
+/// Displays a time in several time zones
 pub struct TimeZoneDisplay {
     link: ComponentLink<Self>,
     props: Props,

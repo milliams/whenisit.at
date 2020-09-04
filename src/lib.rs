@@ -8,7 +8,7 @@ mod datetime;
 mod timezonedisplay;
 
 use wasm_bindgen::prelude::*;
-use yew::{App, Html, ShouldRender, ComponentLink, Component, virtual_dom::VNode, html};
+use yew::{Html, ShouldRender, ComponentLink, Component, virtual_dom::VNode, html};
 use yew_router::{route::Route, service::RouteService, Switch};
 
 use crate::datetime::DateTime;
@@ -27,7 +27,8 @@ pub enum AppRoute {
   Home,
 }
 
-pub struct Converter {
+/// The main application which routes to the sub-pages
+pub struct App {
     link: ComponentLink<Self>,
     datetime: Option<chrono::DateTime<chrono::Utc>>,
     route_service: RouteService<()>,
@@ -40,7 +41,7 @@ pub enum Msg {
     ChangeRoute(AppRoute),
 }
 
-impl Component for Converter {
+impl Component for App {
     type Message = Msg;
     type Properties = ();
 
@@ -49,7 +50,7 @@ impl Component for Converter {
         let route = route_service.get_route();
         let callback = link.callback(Msg::RouteChanged);
         route_service.register_callback(callback);
-        Converter {
+        App {
             link,
             datetime: None,
             route_service,
@@ -102,5 +103,5 @@ impl Component for Converter {
 #[wasm_bindgen(start)]
 pub fn run_app() {
     utils::set_panic_hook();
-    App::<Converter>::new().mount_to_body();
+    yew::App::<App>::new().mount_to_body();
 }

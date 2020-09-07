@@ -22,3 +22,19 @@ pub fn get_local_timezone() -> Option<chrono_tz::Tz> {
     let tz2 = js_sys::Reflect::get(&options, &JsValue::from("timeZone")).ok()?.as_string()?;
     tz2.parse().ok()
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn pass() {
+        let tz = get_local_timezone();
+        assert!(tz.is_some());
+
+        assert_eq!(tz.unwrap(), chrono_tz::Europe::London);
+    }
+}

@@ -23,6 +23,8 @@ jobs:
       run: wasm-pack build --no-typescript --target web --release
     - name: Run tests
       run: wasm-pack test --chrome --headless
+      env:
+        TZ: Europe/London
     - name: Install reuse
       run: sudo pip3 install reuse
     - name: Check REUSE spec

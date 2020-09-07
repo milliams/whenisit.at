@@ -78,31 +78,24 @@ impl Component for App {
     }
 
     fn view(&self) -> Html {
-        html! {
-            <div>
-                <h1>{"When is it at"}</h1>
-                {
-                    match AppRoute::switch(self.route.clone()) {
-                        Some(AppRoute::Home) => { html! {
-                            <div>
-                                <DateTime onsignal=&self.link.callback(Msg::DateTimeChanged) />
-                                <timezonedisplay::TimeZoneDisplay datetime=&self.datetime />
-                                {
-                                    if let Some(dt) = &self.datetime {
-                                        html! {<a href={dt.to_rfc3339()}>{"Share time"}</a>}
-                                    } else {
-                                        html! {}
-                                    }
-                                }
-                            </div>
-                        }},
-                        Some(AppRoute::GivenTime(dt)) => { html! {
-                            <timezonedisplay::TimeZoneDisplay datetime=dt />
-                        }},
-                        None => VNode::from("404")
+        match AppRoute::switch(self.route.clone()) {
+            Some(AppRoute::Home) => { html! {
+                <div>
+                    <DateTime onsignal=&self.link.callback(Msg::DateTimeChanged) />
+                    <timezonedisplay::TimeZoneDisplay datetime=&self.datetime />
+                    {
+                        if let Some(dt) = &self.datetime {
+                            html! {<a href={dt.to_rfc3339()}>{"Share time"}</a>}
+                        } else {
+                            html! {}
+                        }
                     }
-                }
-            </div>
+                </div>
+            }},
+            Some(AppRoute::GivenTime(dt)) => { html! {
+                <timezonedisplay::TimeZoneDisplay datetime=dt />
+            }},
+            None => VNode::from("404")
         }
     }
 }
@@ -110,5 +103,6 @@ impl Component for App {
 #[wasm_bindgen(start)]
 pub fn run_app() {
     utils::set_panic_hook();
-    yew::App::<App>::new().mount_to_body();
+    let main = yew::utils::document().query_selector("main").unwrap().unwrap();
+    yew::App::<App>::new().mount(main);
 }

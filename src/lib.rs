@@ -19,7 +19,7 @@ use crate::datetime::DateTime;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-#[derive(Switch)]
+#[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
   #[to="/{id}"]
   GivenTime(chrono::DateTime<chrono::Utc>),
@@ -87,6 +87,13 @@ impl Component for App {
                             <div>
                                 <DateTime onsignal=&self.link.callback(Msg::DateTimeChanged) />
                                 <timezonedisplay::TimeZoneDisplay datetime=&self.datetime />
+                                {
+                                    if let Some(dt) = &self.datetime {
+                                        html! {<a href={dt.to_rfc3339()}>{"Share time"}</a>}
+                                    } else {
+                                        html! {}
+                                    }
+                                }
                             </div>
                         }},
                         Some(AppRoute::GivenTime(dt)) => { html! {

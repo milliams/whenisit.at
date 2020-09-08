@@ -100,16 +100,16 @@ impl Component for DateTime {
 
     fn view(&self) -> Html {
         html! {
-            <div>
-                <input type="date" class="date"
+            <div class="row">
+                <input type="date" class="col-md form-control form-control-lg"
                     value=&self.state.date
                     oninput=self.link.callback(|e: InputData| Msg::UpdateDate(e.value))
                 />
-                <input type="time" class="time" step="1"
+                <input type="time" class="col-sm form-control form-control-lg" step="1"
                     value=&self.state.time
                     oninput=self.link.callback(|e: InputData| Msg::UpdateTime(e.value))
                 />
-                <Select<chrono_tz::Tz> options=chrono_tz::TZ_VARIANTS.to_vec() placeholder="Timezone" on_change=self.link.callback(|e: chrono_tz::Tz| Msg::UpdateTimeZone(e)) />  // Add "Local" timezone option
+                <Select<chrono_tz::Tz> options=chrono_tz::TZ_VARIANTS.to_vec() class="col-lg form-control form-control-lg" placeholder="Timezone" on_change=self.link.callback(|e: chrono_tz::Tz| Msg::UpdateTimeZone(e)) />  // Add "Local" timezone option
             </div>
         }
     }

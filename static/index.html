@@ -3,19 +3,21 @@ SPDX-FileCopyrightText: © 2020 Matt Williams <matt@milliams.com>
 SPDX-License-Identifier: MIT
 -->
 
-<html>
+<!doctype html>
+<html lang="en">
   <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>When is it at?</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
     <style>
     @import url('https://fonts.googleapis.com/css?family=Libre+Baskerville|Montserrat|Source+Code+Pro&display=swap');
-    body {
-      font-family: 'Montserrat', sans-serif;
-    }
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Libre Baskerville', serif;
-      font-size: 4em;
-      font-weight: bold;
+    }
+    :root {
+      --bs-font-sans-serif: 'Montserrat', sans-serif;
     }
     </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177210172-1"></script>
@@ -28,9 +30,13 @@ SPDX-License-Identifier: MIT
       }
     </script>
   </head>
-  <body>
-    <h1>When is it at</h1>
-    <main>Loading...<main>
+  <body class="container">
+    <h1 class="display-1">When is it at</h1>
+    <main>
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    <main>
     <script type="module">
       import init, {} from './pkg/whenisitat.js';
 

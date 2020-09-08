@@ -57,9 +57,9 @@ impl Component for TimeZoneDisplay {
             }
             None => {
                 html! {
-                    <div>
+                    <p>
                         {"Please enter a date and time above"}
-                    </div>
+                    </p>
                 }
             }
         }

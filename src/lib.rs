@@ -81,6 +81,9 @@ impl Component for App {
         match AppRoute::switch(self.route.clone()) {
             Some(AppRoute::Home) => { html! {
                 <div>
+                    <p class="lead">
+                        {"Set a time and a date and share it across time zones"}
+                    </p>
                     <DateTime onsignal=&self.link.callback(Msg::DateTimeChanged) />
                     <timezonedisplay::TimeZoneDisplay datetime=&self.datetime />
                     {

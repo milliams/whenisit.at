@@ -16,10 +16,10 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-wasm-bindgen = "0.2.73"
-yew = "0.17"
-yew-router = "0.14"
-yew-components = "0.2"
+wasm-bindgen = "0.2.76"
+yew = "0.18"
+yew-router = "0.15"
+yew-components = "0.3"
 yewtil = "0.4"
 web-sys = "0.3"
 js-sys = "0.3"

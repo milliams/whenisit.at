@@ -85,7 +85,7 @@ impl Component for App {
                         {"Set a time and a date and share it across time zones"}
                     </p>
                     <DateTime onsignal=&self.link.callback(Msg::DateTimeChanged) />
-                    <timezonedisplay::TimeZoneDisplay datetime=&self.datetime />
+                    <timezonedisplay::TimeZoneDisplay datetime=self.datetime />
                     {
                         if let Some(dt) = &self.datetime {
                             html! {<a href={dt.to_rfc3339()}>{"Share time"}</a>}

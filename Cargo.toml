@@ -24,7 +24,7 @@ yewtil = "0.4"
 web-sys = "0.3"
 js-sys = "0.3"
 chrono = {version = "0.4", features = ["wasmbind"]}
-chrono-tz = {version = "0.5", default-features = false}
+chrono-tz = {version = "0.6", default-features = false}
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
 # logging them with `console.error`. This is great for development, but requires

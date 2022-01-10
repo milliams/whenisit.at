@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: © 2020 Matt Williams <matt@milliams.com>
 // SPDX-License-Identifier: MIT
 
-use yew::{Properties, Html, ShouldRender, ComponentLink, Component, html};
+use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
 use yewtil::NeqAssign;
 
 use crate::utils;
@@ -25,7 +25,7 @@ impl Component for TimeZoneDisplay {
         TimeZoneDisplay {
             props: Props {
                 datetime: props.datetime,
-            }
+            },
         }
     }
 
@@ -66,6 +66,9 @@ impl Component for TimeZoneDisplay {
     }
 }
 
-fn convert_to_timezone(utc_time: &chrono::DateTime<chrono::Utc>, tz: chrono_tz::Tz) -> chrono::NaiveDateTime {
+fn convert_to_timezone(
+    utc_time: &chrono::DateTime<chrono::Utc>,
+    tz: chrono_tz::Tz,
+) -> chrono::NaiveDateTime {
     utc_time.with_timezone(&tz).naive_local()
 }

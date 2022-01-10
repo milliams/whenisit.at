@@ -18,8 +18,11 @@ pub fn set_panic_hook() {
 ///
 /// If this is not available or it cannot be parsed then return None
 pub fn get_local_timezone() -> Option<chrono_tz::Tz> {
-    let options = js_sys::Intl::DateTimeFormat::new(&js_sys::Array::new(), &js_sys::Object::new()).resolved_options();
-    let tz2 = js_sys::Reflect::get(&options, &JsValue::from("timeZone")).ok()?.as_string()?;
+    let options = js_sys::Intl::DateTimeFormat::new(&js_sys::Array::new(), &js_sys::Object::new())
+        .resolved_options();
+    let tz2 = js_sys::Reflect::get(&options, &JsValue::from("timeZone"))
+        .ok()?
+        .as_string()?;
     tz2.parse().ok()
 }
 

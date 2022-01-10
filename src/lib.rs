@@ -3,12 +3,12 @@
 
 #![recursion_limit = "512"]
 
-mod utils;
 mod datetime;
 mod timezonedisplay;
+mod utils;
 
 use wasm_bindgen::prelude::*;
-use yew::{Html, ShouldRender, ComponentLink, Component, virtual_dom::VNode, html};
+use yew::{html, virtual_dom::VNode, Component, ComponentLink, Html, ShouldRender};
 use yew_router::{route::Route, service::RouteService, Switch};
 
 use crate::datetime::DateTime;
@@ -21,10 +21,10 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[derive(Switch, Debug, Clone)]
 pub enum AppRoute {
-  #[to="/{id}"]
-  GivenTime(chrono::DateTime<chrono::Utc>),
-  #[to="/"]
-  Home,
+    #[to = "/{id}"]
+    GivenTime(chrono::DateTime<chrono::Utc>),
+    #[to = "/"]
+    Home,
 }
 
 /// The main application which routes to the sub-pages
@@ -79,26 +79,30 @@ impl Component for App {
 
     fn view(&self) -> Html {
         match AppRoute::switch(self.route.clone()) {
-            Some(AppRoute::Home) => { html! {
-                <div>
-                    <p class="lead">
-                        {"Set a time and a date and share it across time zones"}
-                    </p>
-                    <DateTime onsignal=&self.link.callback(Msg::DateTimeChanged) />
-                    <timezonedisplay::TimeZoneDisplay datetime=self.datetime />
-                    {
-                        if let Some(dt) = &self.datetime {
-                            html! {<a href={dt.to_rfc3339()}>{"Share time"}</a>}
-                        } else {
-                            html! {}
+            Some(AppRoute::Home) => {
+                html! {
+                    <div>
+                        <p class="lead">
+                            {"Set a time and a date and share it across time zones"}
+                        </p>
+                        <DateTime onsignal=&self.link.callback(Msg::DateTimeChanged) />
+                        <timezonedisplay::TimeZoneDisplay datetime=self.datetime />
+                        {
+                            if let Some(dt) = &self.datetime {
+                                html! {<a href={dt.to_rfc3339()}>{"Share time"}</a>}
+                            } else {
+                                html! {}
+                            }
                         }
-                    }
-                </div>
-            }},
-            Some(AppRoute::GivenTime(dt)) => { html! {
-                <timezonedisplay::TimeZoneDisplay datetime=dt />
-            }},
-            None => VNode::from("404")
+                    </div>
+                }
+            }
+            Some(AppRoute::GivenTime(dt)) => {
+                html! {
+                    <timezonedisplay::TimeZoneDisplay datetime=dt />
+                }
+            }
+            None => VNode::from("404"),
         }
     }
 }
@@ -106,6 +110,9 @@ impl Component for App {
 #[wasm_bindgen(start)]
 pub fn run_app() {
     utils::set_panic_hook();
-    let main = yew::utils::document().query_selector("main").unwrap().unwrap();
+    let main = yew::utils::document()
+        .query_selector("main")
+        .unwrap()
+        .unwrap();
     yew::App::<App>::new().mount(main);
 }

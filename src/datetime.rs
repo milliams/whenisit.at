@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: © 2020 Matt Williams <matt@milliams.com>
 // SPDX-License-Identifier: MIT
 
-use yew::{Properties, Html, ShouldRender, ComponentLink, Component, Callback, InputData, html};
-use web_sys::console;
 use chrono::TimeZone;
+use web_sys::console;
+use yew::{html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender};
 use yew_components::Select;
 
 use crate::utils;
@@ -56,11 +56,11 @@ impl Component for DateTime {
                 match self.create_datetime() {
                     Ok(datetime) => {
                         self.onsignal.emit(datetime);
-                    },
+                    }
                     Err(e) => {
                         console::debug_2(&"Parsing failed:".into(), &e.to_string().into());
                         return false;
-                    },
+                    }
                 }
             }
             Msg::UpdateTime(val) => {
@@ -68,11 +68,11 @@ impl Component for DateTime {
                 match self.create_datetime() {
                     Ok(datetime) => {
                         self.onsignal.emit(datetime);
-                    },
+                    }
                     Err(e) => {
                         console::debug_2(&"Parsing failed:".into(), &e.to_string().into());
                         return false;
-                    },
+                    }
                 }
             }
             Msg::UpdateTimeZone(val) => {
@@ -80,11 +80,11 @@ impl Component for DateTime {
                 match self.create_datetime() {
                     Ok(datetime) => {
                         self.onsignal.emit(datetime);
-                    },
+                    }
                     Err(e) => {
                         console::debug_2(&"Parsing failed:".into(), &e.to_string().into());
                         return false;
-                    },
+                    }
                 }
             }
         }
@@ -117,23 +117,21 @@ impl Component for DateTime {
 
 impl DateTime {
     fn create_datetime(&self) -> Result<chrono::DateTime<chrono::Utc>, Box<dyn std::error::Error>> {
-        let naive_dt = [&self.state.date, "T", &self.state.time].join("").parse::<chrono::NaiveDateTime>()?;
+        let naive_dt = [&self.state.date, "T", &self.state.time]
+            .join("")
+            .parse::<chrono::NaiveDateTime>()?;
 
         let tz: chrono_tz::Tz = match self.state.tz {
-            Some(tz) => {
-                tz
-            }
-            None => {
-                match utils::get_local_timezone() {
-                    Some(tz) => tz,
-                    None => return Err("No local timezone found".into()),
-                }
-            }
+            Some(tz) => tz,
+            None => match utils::get_local_timezone() {
+                Some(tz) => tz,
+                None => return Err("No local timezone found".into()),
+            },
         };
 
         match tz.from_local_datetime(&naive_dt) {
             chrono::offset::LocalResult::Single(dt) => Ok(dt.with_timezone(&chrono::Utc)),
-            chrono::offset::LocalResult::Ambiguous(_, _) => Err("Ambiguous".into()),  // The user says 1:30 in the morning of a clock change day. *Which* 1:30?
+            chrono::offset::LocalResult::Ambiguous(_, _) => Err("Ambiguous".into()), // The user says 1:30 in the morning of a clock change day. *Which* 1:30?
             chrono::offset::LocalResult::None => Err("None".into()),
         }
     }

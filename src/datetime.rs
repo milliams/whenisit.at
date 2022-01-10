@@ -2,15 +2,13 @@
 // SPDX-License-Identifier: MIT
 
 use chrono::TimeZone;
-use web_sys::console;
-use yew::{html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender};
-use yew_components::Select;
+use web_sys::{console, HtmlInputElement, HtmlSelectElement};
+use yew::{html, Callback, Component, Context, Event, Html, Properties, TargetCast};
 
 use crate::utils;
 
-/// A data, time and time zone picker
+/// A date, time and time zone picker
 pub struct DateTime {
-    link: ComponentLink<Self>,
     state: State,
     onsignal: Callback<chrono::DateTime<chrono::Utc>>,
 }
@@ -36,20 +34,19 @@ pub enum Msg {
 impl Component for DateTime {
     type Message = Msg;
     type Properties = Props;
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         let state = State {
             date: "".into(),
             time: "".into(),
             tz: None,
         };
         Self {
-            link,
             state,
-            onsignal: props.onsignal,
+            onsignal: ctx.props().onsignal.clone(),
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Msg::UpdateDate(val) => {
                 self.state.date = val;
@@ -91,25 +88,31 @@ impl Component for DateTime {
         true
     }
 
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
         // Should only return "true" if new properties are different to
         // previously received properties.
         // This component has no properties so we will always return "false".
         false
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <div class="row">
                 <input type="date" class="col-md form-control form-control-lg"
-                    value=self.state.date.clone()  // TODO remove clone in Yew > 0.18?
-                    oninput=self.link.callback(|e: InputData| Msg::UpdateDate(e.value))
+                    value={self.state.date.clone()}
+                    onchange={ctx.link().callback(|e: Event| Msg::UpdateDate(e.target_unchecked_into::<HtmlInputElement>().value()))}
                 />
                 <input type="time" class="col-sm form-control form-control-lg" step="1"
-                    value=self.state.time.clone()  // TODO remove clone in Yew > 0.18?
-                    oninput=self.link.callback(|e: InputData| Msg::UpdateTime(e.value))
+                    value={self.state.time.clone()}
+                    onchange={ctx.link().callback(|e: Event| Msg::UpdateTime(e.target_unchecked_into::<HtmlInputElement>().value()))}
                 />
-                <Select<chrono_tz::Tz> options=chrono_tz::TZ_VARIANTS.to_vec() class="col-lg form-control form-control-lg" placeholder="Timezone" on_change=self.link.callback(|e: chrono_tz::Tz| Msg::UpdateTimeZone(e)) />  // Add "Local" timezone option
+                <select class="col-lg form-control form-control-lg" placeholder="Timezone" onchange={ctx.link().callback(|e: Event| Msg::UpdateTimeZone(e.target_unchecked_into::<HtmlSelectElement>().value().parse().unwrap()))} >
+                {
+                    chrono_tz::TZ_VARIANTS.iter().map(|tz| {
+                        html!{<option key={tz.to_string()}>{ tz }</option>}
+                    }).collect::<Html>()  // TODO Add "Local" timezone option
+                }
+                </select>
             </div>
         }
     }

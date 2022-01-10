@@ -1,15 +1,9 @@
 // SPDX-FileCopyrightText: © 2020 Matt Williams <matt@milliams.com>
 // SPDX-License-Identifier: MIT
 
-use yew::{html, Component, ComponentLink, Html, Properties, ShouldRender};
-use yewtil::NeqAssign;
+use yew::{function_component, html, Properties};
 
 use crate::utils;
-
-/// Displays a time in several time zones
-pub struct TimeZoneDisplay {
-    props: Props,
-}
 
 #[derive(Properties, Clone, PartialEq, Default)]
 pub struct Props {
@@ -17,51 +11,29 @@ pub struct Props {
     pub datetime: Option<chrono::DateTime<chrono::Utc>>,
 }
 
-impl Component for TimeZoneDisplay {
-    type Message = ();
-    type Properties = Props;
-
-    fn create(props: Self::Properties, _: ComponentLink<Self>) -> Self {
-        TimeZoneDisplay {
-            props: Props {
-                datetime: props.datetime,
-            },
-        }
-    }
-
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        true
-    }
-
-    fn change(&mut self, props: Self::Properties) -> bool {
-        self.props.neq_assign(props)
-    }
-
-    fn view(&self) -> Html {
-        match &self.props.datetime {
-            Some(dt) => {
-                html! {
-                    <div>
-                        <p>{"Reference time: "}{&dt.to_string()}</p>
-                        {
-                            if let Some(local_tz) = utils::get_local_timezone() {
-                                html! {
-                                    <p>{local_tz.to_string()}{": "}{convert_to_timezone(&dt, local_tz).to_string()}</p>
-                                }
-                            } else {
-                                html! {}
-                            }
+/// Displays a time in several time zones
+#[function_component(TimeZoneDisplay)]
+pub fn time_zone_display(props: &Props) -> Html {
+    if let Some(dt) = props.datetime {
+        html! {
+            <div>
+                <p>{"Reference time: "}{dt.to_string()}</p>
+                {
+                    if let Some(local_tz) = utils::get_local_timezone() {
+                        html! {
+                            <p>{local_tz.to_string()}{": "}{convert_to_timezone(&dt, local_tz).to_string()}</p>
                         }
-                    </div>
+                    } else {
+                        html! {}
+                    }
                 }
-            }
-            None => {
-                html! {
-                    <p>
-                        {"Please enter a date and time above"}
-                    </p>
-                }
-            }
+            </div>
+        }
+    } else {
+        html! {
+            <p>
+                {"Please enter a date and time above"}
+            </p>
         }
     }
 }

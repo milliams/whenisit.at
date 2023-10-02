@@ -17,7 +17,7 @@ default = ["console_error_panic_hook"]
 
 [dependencies]
 wasm-bindgen = "0.2.78"
-yew = "0.19"
+yew = "0.21"
 yew-router = "0.16"
 yew-components = "0.3"
 yewtil = "0.4"
